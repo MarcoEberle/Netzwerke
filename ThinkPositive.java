@@ -11,7 +11,7 @@ public class HTTPS {
 
     public static void main(String[] args) {
 
-        String host = args[0]; 
+        String host = args[0];
         String smiley = "src=\"https://upload.wikimedia.org/wikipedia/commons/8/8d/Smiley_head_happy.svg\"";
         String path;
 
@@ -25,8 +25,11 @@ public class HTTPS {
                      BufferedReader fromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                      BufferedWriter toClient = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))) {
 
-                    //Reading and cutting the path
+                    //Reading and cutting the path TCP closed handler
                     path = fromClient.readLine();
+                    if(path == null){
+                        continue;
+                    }
                     path = path.substring(4, path.indexOf("HTTP"));
 
                     System.out.println(path);
@@ -41,8 +44,9 @@ public class HTTPS {
 
                             //Writing to client our new Header
                             String readLine = fromServer.readLine();
-
-                            toClient.write("HTTP/1.1 200 OK\r\n");
+                          //  int byteLength = readLine.getBytes().length;
+                            toClient.write("HTTP/1.0 200 OK\r\n");
+                           // toClient.write("Content-Length: " + byteLength + "\r\n");
                             toClient.write("\r\n");
 
                             //Manipulating our images to a smiley
@@ -58,7 +62,6 @@ public class HTTPS {
 
                             }
                             toClient.flush();
-
                         }
                     } else {
                         System.out.println("HTTP PATH");
